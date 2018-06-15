@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title>LayIM 移动版</title>
+		<link rel="stylesheet" href="/layui/css/layui.mobile.css"/>
+		<script src="/layui/jquery-1.11.3.js"></script>
+    	<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    	<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+	</head>
+	<style>
+		.layim-chat-main {
+			top: 5px !important;
+		}
+	</style>
+	<body>
+		<input type="hidden" value="${addrtempUserVO.user_name}" id="user_name"/>
+		<input type="hidden" value="${IMAGE_FILE_PATH}/${addrtempUserVO.user_image}" id="avatar"/>
+		<input type="hidden" value="${addrtempUserVO.id}" id="userid"/>
+		<script src="/layui/layui.js"></script>
+		<script>
+		$(document).ready(function() { 
+			var name = ["小明","包工头","小黑","小徐璇","小冲","小红","李华"];
+			
+			
+			
+			layui.use('mobile', function() {
+	            var socket = new SockJS('/gs-guide-websocket?name=test');
+	            stompClient = Stomp.over(socket);
+	            stompClient.connect({}, function (frame) {
+	                //setConnected(true);
+	                console.log('Connected: ' + frame);
+	                stompClient.subscribe('/topics/greetings', function (data) {
+	                	console.log(data.body);
+	                	var res = JSON.parse(data.body);
+						var mydata = {
+							username: res.mine.username,
+							avatar: res.mine.avatar,
+							id: res.mine.id,
+							content: res.mine.content,
+							type: res.to.type,
+							toid: res.to.id
+						};
+						if(res.mine.id != myid || myid == null){
+							layim.getMessage(mydata);
+						}
+	                   // showGreeting(JSON.parse(greeting.body).content);
+	                });
+	            });
+	            
+				var mobile = layui.mobile,
+						layim = mobile.layim;
+				var myid = null;
+				layim.config({
+					/* uploadImage: {
+							url: contextPath+"/addrtemp/file.html";
+					},
+					uploadFile: {
+							url: contextPath+"/addrtemp/file.html"
+					}, */
+					init: {
+							mine: {
+								"username": name[Math.random() * 7 | 0],
+								"id": Date.parse(new Date()),
+								"avatar": "http://tp1.sinaimg.cn/1571889140/180/40030060651/1"
+							}
+					}
+				});
+				layim.chat({
+					id: 111111,
+					name: '项目一',
+					type: 'group',
+					avatar: 'http://tp1.sinaimg.cn/1571889140/180/40030060651/1'
+				});
+				layim.on('sendMessage', function(data) {
+					console.log(data)
+					//socket.emit("chatevent", data);
+					sendName(data);
+					myid = data.mine.id;
+				});
+				
+				layim.on('chatlog', function(data) {
+						layer.msg('do something');
+				});
+			});
+		});
+		function sendName(data) {
+		    stompClient.send("/app/hellos", {}, JSON.stringify(data));
+		}
+		</script>
+	</body>
+</html>

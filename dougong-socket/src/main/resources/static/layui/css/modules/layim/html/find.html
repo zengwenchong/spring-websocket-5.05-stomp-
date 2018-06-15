@@ -1,0 +1,163 @@
+<html>
+
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="viewport" content="width=device-width,minimum-scale=1.0,minimal-ui,maximum-scale=1.0,user-scalable=no,height=device-height">
+		<title></title>
+		<link rel="stylesheet" href="../../../layui.css">
+		<script src="../../../../jquery.min.js"></script>
+		<script src="../../../../layui.js"></script>
+		<script src="../../../../jquery.cookie.js"></script>
+	</head>
+	<style>
+		.friend ul li {
+			list-style: none;
+			display: inline-block;
+			width: 230px;
+		}
+		.friend ul li {
+			position: relative;
+			margin: 10px;
+			margin-right: 0;
+			margin-top: 0;
+		}
+		.friend ul li>img {
+			border-radius: 50%;
+			width: 60px;
+			height: 60px;
+		}
+		.friend ul li>span {
+			font-size: 14px;
+			color: #333;
+			font-style: normal;
+			display: inline-block;
+			height: 30px;
+			line-height: 30px;
+			position: absolute;
+			top: 0;
+			left: 65px;
+		}
+		.friend ul li>button {
+			margin-top: 30px;
+			margin-left: 5px;
+		}
+		/*添加选项*/
+		
+		.layim-add-box {
+			margin: 15px;
+		}
+		
+		.layim-add-img {
+			display: inline-block;
+			vertical-align: top;
+			width: 100px;
+			margin-right: 20px;
+			text-align: center;
+		}
+		
+		.layim-add-img>img {
+			width: 100px;
+			height: 100px;
+		}
+		
+		.layim-add-img>img,
+		.layim-add-remark>p {
+			margin-bottom: 10px;
+		}
+		
+		.layim-add-remark>.layui-select {
+			width: 100%;
+			margin-bottom: 10px;
+		}
+		
+		.layim-add-remark {
+			display: inline-block;
+			vertical-align: top;
+			width: 280px;
+		}
+	</style>
+	<body class="body">
+		<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+			<ul class="layui-tab-title" style="width: 100%;">
+				<li class="layui-this" style="width: 100%;">好友查找</li>
+			</ul>
+			<div class="layui-tab-content">
+				<div class="layui-tab-item layui-show">
+					<div style="height: 50px;">
+						<form class="layui-form layui-form-pane" action="/user/search" id="friendSearch">
+							<div style="float: left;">
+								<label class="layui-form-label" style="width: 40px;">昵称</label>
+								<div class="layui-input-inline" style="width: 400px;">
+									<input type="text" name="USERNAME" lay-verify="name" placeholder="请输入昵称" autocomplete="off" class="layui-input userName">
+								</div>
+							</div>
+							<div style="float: left; margin-left: 20px; margin-top: 5px;">
+								<div class="layui-input-inline">
+									<input name="type" value="friend" type="hidden">
+									<input type="hidden" name="table" value="CHAT_MINE">
+									<input type="hidden" name="page" value="1">
+									<input type="hidden" name="pageSize" value="14">
+									<button class="layui-btn" style="margin-top: -5px;">
+									  	<i class="layui-icon">&#xe615;</i> 查找
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+						<div class="friend">
+						<ul>
+							
+						</ul>
+					</div>
+					</div>
+			</div>
+		</div>
+	</body>
+	<script>
+		$(document).ready(function() {
+			$("#friendSearch").submit(function(ev) {
+				ev.preventDefault()
+				var data = $(this).serialize()
+				$.post('/user/search', data, function(res) {
+					if(res.code == 'success') {
+						var datas = $.cookie("datas"); 
+						datas = datas.substr(2, datas.length);
+						datas = JSON.parse(datas);
+						var htmls = '<li>' +
+							'<img src="'+ datas.avatar +'" />' +
+							'<span>' + datas.username + '</span>' +
+							'<button data-type="addFriend" id="adds" class="layui-btn site-demo-layim layui-btn-mini"><i class="layui-icon">&#xe608;</i>添加</button>' +
+							'</li>'
+						$(".friend>ul").html(htmls);
+					}else if(res.code == 'error'){
+						layer.msg("抱歉，暂无结果，请检查用户名是否正确")
+					}
+					$("#adds").click(function(){
+						var data = {
+					        type: 'friend'
+					        ,id: datas.id
+					        ,username: datas.username//好友昵称，若申请加群，参数为：groupname
+					        ,avatar: datas.avatar //头像
+					        ,sign: datas.sign
+						}
+						console.log(data)
+						$.post('/user/add', data, function(res) {
+						});
+					})
+				});
+			});
+		});
+
+		layui.use('element', function() {
+
+		});
+		layui.use('layer', function() {
+			var layer = layui.layer;
+		});
+	</script>
+	</script>
+
+</html>

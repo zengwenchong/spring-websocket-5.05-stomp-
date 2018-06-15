@@ -1,0 +1,10 @@
+#本地开发环境
+server:
+  port: 8888
+  context-path: /
+
+#应用log4j自定义配置
+logging:
+  config: classpath:loggin/log4j-prod.xml
+#jar启动命令：
+#    java -jar xxx      --spring.profiles.active=real
