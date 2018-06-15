@@ -1,7 +1,8 @@
 # spring-websocket-5.05-stomp-
 spring-websocket-5.05 基于stomp协议
-WebSocket协议定义了两种类型的消息，文本和二进制，但其内容未定义。 为客户端和服务器定义了一种协商子协议的机制 - 即更高级别的消息传递协议，用于在WebSocket之上定义每种消息可以发送哪种消息，每种消息的格式和内容是什么等等 上。 子协议的使用是可选的，但是客户端和服务器需要就定义消息内容的一些协议达成一致。
 
+
+WebSocket协议定义了两种类型的消息，文本和二进制，但其内容未定义。 为客户端和服务器定义了一种协商子协议的机制 - 即更高级别的消息传递协议，用于在WebSocket之上定义每种消息可以发送哪种消息，每种消息的格式和内容是什么等等 上。 子协议的使用是可选的，但是客户端和服务器需要就定义消息内容的一些协议达成一致。
 
 
 STOMP是一种简单的面向文本的消息传递协议，最初是为脚本语言（如Ruby，Python和Perl）创建的，用于连接企业消息代理。 它旨在解决常用消息传递模式的最小子集。 STOMP可用于任何可靠的双向流媒体网络协议，如TCP和WebSocket。 尽管STOMP是一种面向文本的协议，但消息负载可以是文本或二进制。
@@ -9,7 +10,6 @@ STOMP是一种简单的面向文本的消息传递协议，最初是为脚本语
 
 
 STOMP是一个基于帧的协议，其帧在HTTP上建模。 STOMP框架的结构：
-
 
 
 
@@ -448,3 +448,7 @@ public class HandshakeInterceptor extends HttpSessionHandshakeInterceptor {
         super.afterHandshake(request, response, wsHandler, ex);  
     }  
 }  
+
+启动后访问：http://localhost:8888/index/socket
+
+前端用的是：LayIM+stomp.min.js
